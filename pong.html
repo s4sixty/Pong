@@ -18,21 +18,23 @@
   
   var initialisation = function() {
     // le code de l'initialisation
-    game.menu.clickToPlay();
+    setTimeout(()=>{game.menu.clickToPlay()},1000);
     requestAnimId = window.requestAnimationFrame(main); // premier appel de main au rafraîchissement de la page
   }
 
   var main = function() {
     // le code du jeu
-    //console.log("Rafraichissement");
-    game.clearLayer(game.playersBallLayer);
-    game.clearLayer(game.scoreLayer);
-    game.movePlayers();
-    game.displayPlayers();
-    game.moveBall();
-    game.ai.move();
-    game.collideBallWithPlayersAndAction();
-    game.displayScore();
+    console.log("Rafraichissement");
+    if(game.playersBallLayer&&game.scoreLayer) {
+      game.clearLayer(game.playersBallLayer);
+      game.clearLayer(game.scoreLayer);
+      game.movePlayers();
+      game.displayPlayers();
+      game.moveBall();
+      game.ai.move();
+      game.collideBallWithPlayersAndAction();
+      game.displayScore();
+    }
     requestAnimId = window.requestAnimationFrame(main); // rappel de main au prochain rafraichissement de la page
   }
   

@@ -6,19 +6,22 @@ var game = {
     netColor: "#FFFFFF",
     groundLayer : null,  
     scoreLayer : null,
+    menuLayer : null,
     playersBallLayer : null,
-    scorePosPlayer1 : 300,
-    scorePosPlayer2 : 365,
+    scorePosPlayer1 : 270,
+    scorePosPlayer2 : 375,
     wallSound: null,
     playerSound : null,
     backgroundMusic : null,
+    paused : false,
+    pauseLayer : null,
     ball : {
       width : 10,
       height : 10,
       color : "#FFFFFF",
       posX : 200,
       posY : 200,
-      speed : 2,
+      speed : 3,
       directionX: 1,
       directionY: 1,
       move : function() {
@@ -27,10 +30,12 @@ var game = {
       },
       bounce : function(soundToPlay) {
         if ( this.posX > game.groundWidth-this.width ) {
+          console.log("score !");
           game.playerOne.score++;
           this.resetPosition();
         }
-        if( this.posX == 0 ) {
+        if( this.posX <= 0 ) {
+          console.log("score !");
           game.playerTwo.score++;
           this.resetPosition();
         }
@@ -122,8 +127,8 @@ var game = {
     },
 
     displayScore : function() {
-      game.display.drawTextInLayer(this.scoreLayer, this.playerOne.score, "60px Arial", "#FFFFFF", this.scorePosPlayer1, 55);
-      game.display.drawTextInLayer(this.scoreLayer, this.playerTwo.score, "60px Arial", "#FFFFFF", this.scorePosPlayer2, 55);
+      game.display.drawTextInLayer(this.scoreLayer, this.playerOne.score, "60px KarmaticArcade, Courier New, Courier, monospace", "#FFFFFF", this.scorePosPlayer1, 55);
+      game.display.drawTextInLayer(this.scoreLayer, this.playerTwo.score, "60px KarmaticArcade, Courier New, Courier, monospace", "#FFFFFF", this.scorePosPlayer2, 55);
     },
 
     clearLayer : function(targetLayer) {
@@ -138,30 +143,16 @@ var game = {
     initMouse : function(onMouseMoveFunction) {
       window.onmousemove = onMouseMoveFunction;
     },
-
-    startMenu : function() {
-      this.groundLayer = game.display.createLayer("terrain", this.groundWidth, this.groundHeight, undefined, 0, "#000000", 0, 0); 
-      var logo = new Image;
-      logo.src = "./img/logo.png";
-      logo.addEventListener('load', function() {
-        game.display.drawImageInLayer(game.groundLayer,logo , game.groundWidth/2-100, 10, 200, 100);
-      }, false);
-      game.display.drawTextInLayer(this.groundLayer, "Player vs Computer", "26px Courier New, Courier, monospace", "#FFFFFF", 200, 200);
-      game.display.drawTextInLayer(this.groundLayer, "Player vs Player", "26px Courier New, Courier, monospace", "#FFFFFF", 215, 250);
-      game.display.drawTextInLayer(this.groundLayer, "Samir AMARA "+String.fromCharCode(169)+" 2020 ", "14px Courier New, Courier, monospace", "#FFFFFF", 265, this.groundHeight-10);
-      this.MenuMusic = new Audio("./music/menu.mp3");
-      this.MenuMusic.play();
-      this.MenuMusic.loop=true;
-    },
     
    
     init : function() {
+      this.clearLayer(this.menuLayer);
       this.groundLayer = game.display.createLayer("terrain", this.groundWidth, this.groundHeight, undefined, 0, "#000000", 0, 0); 
       game.display.drawRectangleInLayer(this.groundLayer, this.netWidth, this.groundHeight, this.netColor, this.groundWidth/2 - this.netWidth/2, 0);
       this.scoreLayer = game.display.createLayer("score", this.groundWidth, this.groundHeight, undefined, 1, undefined, 0, 0);
       this.playersBallLayer = game.display.createLayer("joueursetballe", this.groundWidth, this.groundHeight, undefined, 2, undefined, 0, 0);
 
-      game.display.drawTextInLayer(this.groundLayer, "SCORE", "10px Arial", "#FF0000", 10, 10);
+      game.display.drawTextInLayer(this.groundLayer, "SCORE", "10px KarmaticArcade, Courier New, Courier, monospace", "#FF0000", 10, 10);
       this.playersBallLayer = game.display.createLayer("joueursetballe", this.groundWidth, this.groundHeight, undefined, 2, undefined, 0, 0);  
       game.display.drawTextInLayer(this.playersBallLayer, "JOUEURSETBALLE", "10px Arial", "#FF0000", 100, 100);
       this.displayScore();
