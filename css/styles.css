@@ -1,0 +1,16 @@
+@font-face {
+    font-family: "KarmaticArcade";
+    src: url("../fonts/ka1.eot"); /* IE9 Compat Modes */
+    src: url("../fonts/ka1.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+      url("../fonts/ka1.otf") format("opentype"), /* Open Type Font */
+      url("../fonts/ka1.svg") format("svg"), /* Legacy iOS */
+      url("../fonts/ka1.ttf") format("truetype"), /* Safari, Android, iOS */
+      url("../fonts/ka1.woff") format("woff"), /* Modern Browsers */
+      url("../fonts/ka1.woff2") format("woff2"); /* Modern Browsers */
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  body {
+      font-family: "KarmaticArcade", cursive;
+  }

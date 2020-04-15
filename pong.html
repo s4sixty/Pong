@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <link href="css/styles.css" rel="stylesheet">
+  </head>
+ <body>
+
+ </body>
+<script src="js/game.js"></script>
+<script src="js/game.display.js"></script>
+<script src="js/game.control.js"></script>
+<script src="js/game.keycode.js"></script>
+<script src="js/game.ai.js"></script>
+<script>
+(function () {
+  // début du code isolé
+  var requestAnimId;
+  
+  var initialisation = function() {
+    // le code de l'initialisation
+    game.startMenu();
+    requestAnimId = window.requestAnimationFrame(main); // premier appel de main au rafraîchissement de la page
+  }
+
+  var main = function() {
+    // le code du jeu
+    //console.log("Rafraichissement");
+    game.clearLayer(game.playersBallLayer);
+    game.clearLayer(game.scoreLayer);
+    game.movePlayers();
+    game.displayPlayers();
+    game.moveBall();
+    game.ai.move();
+    game.collideBallWithPlayersAndAction();
+    game.displayScore();
+    requestAnimId = window.requestAnimationFrame(main); // rappel de main au prochain rafraichissement de la page
+  }
+  
+  window.onload = initialisation; // appel de la fonction initialisation au chargement de la page
+  
+  // fin du code isolé
+})();
+</script> 
+</html>
