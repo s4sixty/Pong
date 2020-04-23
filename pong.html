@@ -25,7 +25,8 @@
   var main = function() {
     // le code du jeu
     console.log("Rafraichissement");
-    if(game.playersBallLayer&&game.scoreLayer) {
+    if(game.winner) {game.end();}
+    else if(game.playersBallLayer&&game.scoreLayer) {
       game.clearLayer(game.playersBallLayer);
       game.clearLayer(game.scoreLayer);
       game.movePlayers();

@@ -15,6 +15,7 @@ var game = {
     backgroundMusic : null,
     paused : false,
     pauseLayer : null,
+    winner : null,
     ball : {
       width : 10,
       height : 10,
@@ -29,13 +30,21 @@ var game = {
         this.posY += this.directionY * this.speed;
       },
       bounce : function(soundToPlay) {
+        if (game.playerOne.score==10) {
+          game.winner="p1";
+          game.end();
+          return;
+        }
+        if (game.playerTwo.score==10) {
+          game.winner="p2";
+          game.end();
+          return;
+        }
         if ( this.posX > game.groundWidth-this.width ) {
-          console.log("score !");
           game.playerOne.score++;
           this.resetPosition();
         }
         if( this.posX <= 0 ) {
-          console.log("score !");
           game.playerTwo.score++;
           this.resetPosition();
         }
@@ -168,6 +177,25 @@ var game = {
       this.backgroundMusic.play();
 
       game.ai.setPlayerAndBall(this.playerTwo, this.ball);
+    },
+
+    end : function() {
+      this.clearLayer(this.groundLayer);
+      this.clearLayer(this.scoreLayer);
+      this.clearLayer(this.playersBallLayer);
+      this.endLayer = game.display.createLayer("terrain", this.groundWidth, this.groundHeight, undefined, 0, "#000000", 0, 0); 
+      if(this.winner=="p1") {
+        game.display.drawTextInLayer(game.endLayer, "YOU WIN !", "26px KarmaticArcade, Courier New, Courier, monospace", "#FFFFFF", 270, 200);
+      }
+      if(this.winner=="p2") {
+        game.display.drawTextInLayer(game.endLayer, "YOU LOSE !", "26px KarmaticArcade, Courier New, Courier, monospace", "#FFFFFF", 265, 200);
+      }
+      game.display.drawTextInLayer(game.endLayer, "Cliquez sur Espace pour revenir au menu principal", "11px Courier New, Courier, monospace", "#FFFFFF", 185, game.groundHeight-40);
+      window.addEventListener("keydown", e => {
+        if(e.keyCode == game.keycode.KEYSPACE) {
+          location.reload();
+        };
+    });
     }
    
   };

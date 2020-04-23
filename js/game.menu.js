@@ -39,6 +39,7 @@ game.menu = {
             };
             if(e.keyCode == game.keycode.KEYENTER&&this.selectedMenu!=null) {
                 this.selectedMenu=null;
+                game.MenuMusic.pause();
                 game.init();
             }
         });

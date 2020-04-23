@@ -1,7 +1,7 @@
 game.ai = {
     player : null,
     ball : null,
-    difficulty: 3,
+    difficulty: 2.9,
    
     setPlayerAndBall : function(player, ball) {
       this.player = player;
