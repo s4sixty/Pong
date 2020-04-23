@@ -11,10 +11,21 @@
 <script src="js/game.control.js"></script>
 <script src="js/game.keycode.js"></script>
 <script src="js/game.ai.js"></script>
+<script src="socket.io/socket.io.js"></script>
 <script>
 (function () {
   // début du code isolé
   var requestAnimId;
+
+  var socket = io("http://localhost:3000", {
+    extraHeaders: {
+      'Access-Control-Allow-Credentials': 'omit'
+    }
+  });
+
+  socket.on('connect', function(){});
+  socket.on('event', function(data){});
+  socket.on('disconnect', function(){});
   
   var initialisation = function() {
     // le code de l'initialisation
