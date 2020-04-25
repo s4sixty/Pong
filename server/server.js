@@ -1,27 +1,86 @@
-const express = require('express');
-const app = express();
-var http = require('http').createServer(app);
-var cors = require('cors');
-// Chargement de socket.io
-var io = require('socket.io')(http);
-io.set('origins', '*:*');
 
-// Allow cors
-app.use(cors());
+// --- INIT DEPENDENCIES
+let express = require('express'),
+    app = express(),
+    path = require('path');
+
+// --
+let http = require('http').Server(app);
+let io = require('socket.io')(http);
+let cors= require('cors');
+
+
+//fichier statiques
+app.use(express.static('static'));
+
+
 // Autoriser des requetes de plusieurs domaines
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+
+    // authorized headers for preflight requests
+    // https://developer.mozilla.org/en-US/docs/Glossary/preflight_request
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+
+    app.options('*', (req, res) => {
+        // allowed XHR methods  
+        res.header('Access-Control-Allow-Methods', 'GET, PATCH, PUT, POST, DELETE, OPTIONS');
+        res.send();
+    });
+});
+
+// ------------------------
+//
+// ------------------------
 
 // Routes
 app.get('/', function (req, res) {
-  res.send('Hello World!')
+  res.sendFile(__dirname + '/static/pong.html');
+});
+
+app.get('/pong', function(req, res) {
+  res.sendFile(__dirname + '/static/pong.html');
 })
 
-var server = app.listen(3000, function () {
-  console.log('Example app listening on port 3000!')
-})
-
-// Quand un client se connecte, on le note dans la console
-io.on('connection', (socket) => {
-    res.writeHead(200, {
-        'Access-Control-Allow-Origin' : '*'
+// Gére la discussion chat du jeu
+io.sockets.on('connection', function (socket) {
+    socket.on('chat message', (msg) => {
+      socket.broadcast.emit('chat message', msg);
+      console.log(msg);
     });
+    socket.on('remotePlayerData', (msg) => {
+      socket.broadcast.emit('remotePlayerData', msg);
+      console.log(msg);
+    });
+  console.log("new client !");
+});
+
+// Gére la synchronisation des joueurs
+
+
+// Retourne le nombre d'utilisateurs connectés après chaque événement
+io.sockets.on('connection', function (socket) {
+  io.emit('number users', socket.client.conn.server.clientsCount);
+  console.log( socket.client.conn.server.clientsCount + " users connected" );
+  socket.on('disconnect', function () {
+    io.emit('number users', socket.client.conn.server.clientsCount);
+    console.log( socket.client.conn.server.clientsCount + " users connected" );
+  });
+  console.log(socket.id);
+});
+
+// Gére la discussion chat du jeu
+io.sockets.on('connection', function (socket) {
+  socket.on('readyPlayer', (msg) => {
+    console.log(msg);
+  });
+console.log("new client !");
+});
+
+// ------------------------
+// START SERVER
+// ------------------------
+http.listen(3010,function(){
+    console.info('HTTP server started on port 3010');
 });

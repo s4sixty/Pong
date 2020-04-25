@@ -1,0 +1,105 @@
+<html>
+  <head>
+    <link href="css/styles.css" rel="stylesheet">
+  </head>
+ <body>
+  <div class="wrapper">
+    <div class="container">
+        <div class="right">
+          <div class="top"><span>Nombre de joueurs en ligne : <span class="name" id="nbUsers">1</span></span></div>
+            <div id="chat" class="chat" data-chat="person2">
+                <div class="conversation-start">
+                    <span>Pong chat room</span>
+                </div>
+            </div>
+            <div class="write">
+              <form action="">
+                <input id="m" autocomplete="off" />
+                <a href="javascript:;" class="write-link send"></a>
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+ </body>
+<script src="socket.io/socket.io.js"></script>
+<script src="js/game.js"></script>
+<script src="js/game.menu.js"></script>
+<script src="js/game.display.js"></script>
+<script src="js/game.control.js"></script>
+<script src="js/game.keycode.js"></script>
+<script src="js/game.ai.js"></script>
+<script src="js/game.pvp.js"></script>
+<script src="js/game.socket.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+  $(function () {
+
+    $('form').submit(function(e) {
+      e.preventDefault(); // prevents page reloading
+      game.socket.emit('chat message', $('#m').val());
+      document.getElementById('chat').innerHTML+='<div class="bubble you">'+$('#m').val()+'</div>';
+      $('#m').val('');
+      return false;
+    });
+    game.socket.on('chat message', function(msg){
+      document.getElementById('chat').innerHTML+='<div class="bubble me">'+msg+'</div>';
+    });
+    game.socket.on('number users', function(msg){
+      document.getElementById('nbUsers').innerHTML=msg;
+    });
+  });
+</script>
+<script>
+(function () {
+  // début du code isolé
+  var requestAnimId;
+  
+  var initialisation = function() {
+    // le code de l'initialisation
+    setTimeout(()=>{game.menu.clickToPlay()},1000);
+    requestAnimId = window.requestAnimationFrame(main); // premier appel de main au rafraîchissement de la page
+  }
+
+  var main = function() {
+    // le code du jeu
+    if(game.winner) {game.end();}
+    else if(game.playersBallLayer&&game.scoreLayer) {
+      game.clearLayer(game.playersBallLayer);
+      game.clearLayer(game.scoreLayer);
+      game.movePlayers();
+      game.displayPlayers();
+      game.moveBall();
+      if(game.mode=="pvc") game.ai.move();
+      if(game.mode=="pvp") {
+        game.pvp.sendLocalData();
+        game.pvp.receiveRemoteData();
+      }
+      game.collideBallWithPlayersAndAction();
+      game.displayScore();
+    }
+    requestAnimId = window.requestAnimationFrame(main); // rappel de main au prochain rafraichissement de la page
+  }
+  
+  window.onload = initialisation; // appel de la fonction initialisation au chargement de la page
+  
+  // fin du code isolé
+})();
+</script> 
+<script>
+  document.querySelector(".chat[data-chat=person2]").classList.add("active-chat");
+
+let friends = {
+		list: document.querySelector("ul.people"),
+		all: document.querySelectorAll(".left .person"),
+		name: ""
+	},
+	chat = {
+		container: document.querySelector(".container .right"),
+		current: null,
+		person: null,
+		name: document.querySelector(".container .right .top .name")
+	};
+
+</script>
+</html>
