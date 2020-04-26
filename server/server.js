@@ -30,6 +30,9 @@ app.use((req, res, next) => {
     });
 });
 
+// --- Variables
+var players = new Array();
+
 // ------------------------
 //
 // ------------------------
@@ -73,9 +76,13 @@ io.sockets.on('connection', function (socket) {
 // Gére la discussion chat du jeu
 io.sockets.on('connection', function (socket) {
   socket.on('readyPlayer', (msg) => {
-    console.log(msg);
+    if(msg) players.push(socket.id);
+    if(players.length==2) {
+      io.to(players[0]).emit('gametstart', "1v1");
+      io.to(players[1]).emit('gametstart', "1v1");
+    }
   });
-console.log("new client !");
+  console.log(players);
 });
 
 // ------------------------

@@ -1,9 +1,11 @@
 game.pvp = {
 
     readyPlayer : false,
+    remotePlayerReady : false,
+    gamestarted : false,
+
 
     receiveRemoteData : function(){
-        console.log("remote");
         game.socket.on('remotePlayerData', function(data) {
             game.playerTwo.posY=data;
         });

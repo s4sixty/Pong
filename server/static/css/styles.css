@@ -19,7 +19,7 @@
 }
 
 body {
-  font-family: "KarmaticArcade", cursive;
+  font-family: "KarmaticArcade", cursive !important;
 }
 
 * {
