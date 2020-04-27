@@ -24,7 +24,7 @@ var game = {
       color : "#FFFFFF",
       posX : 350,
       posY : 200,
-      speed : 3,
+      speed : 3.1,
       directionX: 1,
       directionY: 1,
       move : function() {
@@ -57,7 +57,7 @@ var game = {
       },
       collide : function(anotherItem) {
         if ( !( this.posX >= anotherItem.posX + anotherItem.width || this.posX <= anotherItem.posX - this.width
-        || this.posY >= anotherItem.posY + anotherItem.height || this.posY <= anotherItem.posY - this.height ) ) {
+        || this.posY >= anotherItem.posY + anotherItem.height+10 || this.posY <= anotherItem.posY - this.height -10 ) ) {
           // Collision
           return true;
         } 
@@ -94,9 +94,40 @@ var game = {
       score : 0
     },
 
+    playerThree : {
+      width : 10,
+      height : 50,
+      color : "#FFFFFF",
+      posX : 200,
+      posY : 200,
+      goUp : false,
+      goDown : false,
+      originalPosition : "right",
+      score : 0
+    },
+
+    playerFour : {
+      width : 10,
+      height : 50,
+      color : "#FFFFFF",
+      posX : 480,
+      posY : 200,
+      goUp : false,
+      goDown : false,
+      originalPosition : "right",
+      score : 0
+    },
+
     displayPlayers : function() {
       game.display.drawRectangleInLayer(this.playersBallLayer, this.playerOne.width, this.playerOne.height, this.playerOne.color, this.playerOne.posX, this.playerOne.posY);
       game.display.drawRectangleInLayer(this.playersBallLayer, this.playerTwo.width, this.playerTwo.height, this.playerTwo.color, this.playerTwo.posX, this.playerTwo.posY);
+    },
+
+    displayFourPlayers : function() {
+      game.display.drawRectangleInLayer(this.playersBallLayer, this.playerOne.width, this.playerOne.height, this.playerOne.color, this.playerOne.posX, this.playerOne.posY);
+      game.display.drawRectangleInLayer(this.playersBallLayer, this.playerTwo.width, this.playerTwo.height, this.playerTwo.color, this.playerTwo.posX, this.playerTwo.posY);
+      game.display.drawRectangleInLayer(this.playersBallLayer, this.playerThree.width, this.playerThree.height, this.playerThree.color, this.playerThree.posX, this.playerThree.posY);
+      game.display.drawRectangleInLayer(this.playersBallLayer, this.playerFour.width, this.playerFour.height, this.playerFour.color, this.playerFour.posX, this.playerFour.posY);
     },
 
     pause : function (){
@@ -167,6 +198,14 @@ var game = {
         this.playerSound.play();
       }
       if ( this.ball.collide(game.playerTwo) ) {
+        game.ball.directionX = -game.ball.directionX;
+        this.playerSound.play();
+      }
+      if ( this.ball.collide(game.playerThree) && game.mode=="2v2" ) {
+        game.ball.directionX = -game.ball.directionX;
+        this.playerSound.play();
+      }
+      if ( this.ball.collide(game.playerFour) && game.mode=="2v2") {
         game.ball.directionX = -game.ball.directionX;
         this.playerSound.play();
       }

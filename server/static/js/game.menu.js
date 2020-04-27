@@ -92,15 +92,18 @@ game.menu = {
                 game.menu.multiplayer();
             };
             if(e.keyCode == game.keycode.KEYENTER&&this.multiplayerMenu!=null) {
+                console.log(game.mode);
                 game.MenuMusic.pause();
                 if(this.multiplayerMenu=="1v1") {
-                    game.mode="2v2";
+                    game.mode="1v1";
                     game.socket.emit("readyPlayer", "1v1");
+                    console.log("emit 1v1");
                     game.pvp.waiting=true;
                 }
                 if(this.multiplayerMenu=="2v2") {
-                    game.mode="1v1";
+                    game.mode="2v2";
                     game.socket.emit("readyPlayer", "2v2");
+                    console.log('emit 2v2');
                     game.pvp.waiting=true;
                     //game.pvp.pvp();
                 }

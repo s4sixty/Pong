@@ -57,7 +57,7 @@ game.pvp = {
         game.playersBallLayer = game.display.createLayer("joueursetballe", game.groundWidth, game.groundHeight, undefined, 2, undefined, 0, 0);  
         game.displayScore();
         game.displayBall(200,200);
-        game.displayPlayers();
+        game.displayFourPlayers();
 
         game.initKeyboard(game.control.onKeyDown, game.control.onKeyUp);
         game.initMouse(game.control.onMouseMove);

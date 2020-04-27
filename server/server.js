@@ -32,6 +32,7 @@ app.use((req, res, next) => {
 // --- Variables
 var rooms = [[]];
 var roomno = 1;
+var player = 1;
 
 // ------------------------
 //
@@ -62,6 +63,7 @@ io.sockets.on('connection', function (socket) {
   });
   // Gére la synchronisation des joueurs
   socket.on('readyPlayer', (msg) => {
+    console.log(msg);
     //Increase roomno 2 clients are present in a room.
     if(msg=="1v1") {
       console.log(roomno);
@@ -90,6 +92,39 @@ io.sockets.on('connection', function (socket) {
         socket.room=roomno;
         socket.to(toString(socket.room)).emit('chat message', "a user just joined your room");
         console.log("new player joined the new room : "+socket.room+io.sockets.adapter.rooms[toString(roomno)].length);
+        console.log(io.sockets.adapter.rooms[toString(roomno)]);
+      }
+    }
+
+    if(msg=="2v2") {
+      console.log(roomno);
+      if(!io.sockets.adapter.rooms[toString(roomno)] || io.sockets.adapter.rooms[toString(roomno)].length<=3) {
+        io.in(toString(roomno)).emit('status', 'waiting');
+        io.in(toString(roomno)).emit('player', toString(player));
+        socket.join(toString(roomno));
+        socket.room=roomno;
+        socket.to(toString(socket.room)).emit('chat message', "a user just joined your 2v2 room");
+        if(io.sockets.adapter.rooms[toString(roomno)].length==4){
+          //Démarrer l'ancienne queue
+          io.in(toString(roomno)).emit('status', 'started');
+          // Créer une nouvelle room
+          ++roomno;
+          player=1;
+        } 
+        console.log("new player joined the room : "+socket.room+io.sockets.adapter.rooms[toString(roomno)].length);
+      }
+      else if(io.sockets.adapter.rooms[toString(roomno)].length>=4) {
+        io.of('/').in(toString(roomno)).clients((error, socketIds) => {
+          if (error) throw error;
+          socketIds.forEach(socketId => {
+            io.sockets.sockets[socketId].leave(toString(roomno));
+            console.log(socketId+'removed from 2v2 room'+ roomno);
+          });
+        });
+        socket.join(toString(roomno));
+        socket.room=roomno;
+        socket.to(toString(socket.room)).emit('chat message', "a user just joined your 2v2 room");
+        console.log("new player joined the new 2v2 room : "+socket.room+io.sockets.adapter.rooms[toString(roomno)].length);
         console.log(io.sockets.adapter.rooms[toString(roomno)]);
       }
     }

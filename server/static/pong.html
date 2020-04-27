@@ -75,8 +75,8 @@
     game.socket.on('status', function(msg){
       document.getElementById('chat').innerHTML+='<div class="bubble me">'+msg+'</div>';
       if(msg=="started") {
-        game.pvp.pvp();
-        console.log(msg);
+        if(game.mode=="1v1")game.pvp.pvp();
+        if(game.mode=="2v2")game.pvp.pvpdouble();
         game.pvp.gamestarted=true;
         $('#waiting').modal('hide');
         game.pvp.waiting=false;
@@ -110,7 +110,8 @@
       game.clearLayer(game.playersBallLayer);
       game.clearLayer(game.scoreLayer);
       game.movePlayers();
-      game.displayPlayers();
+      if(game.mode!="2v2")game.displayPlayers();
+      if(game.mode=="2v2")game.displayFourPlayers();
       game.moveBall();
       game.collideBallWithPlayersAndAction();
       game.displayScore();
@@ -126,7 +127,7 @@
         }
       }
       
-      console.log(game.pvp.waiting);
+      console.log(game.mode);
     }
     requestAnimId = window.requestAnimationFrame(main); // rappel de main au prochain rafraichissement de la page
   }
