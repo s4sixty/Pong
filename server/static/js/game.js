@@ -22,7 +22,7 @@ var game = {
       width : 10,
       height : 10,
       color : "#FFFFFF",
-      posX : 200,
+      posX : 350,
       posY : 200,
       speed : 3,
       directionX: 1,
@@ -64,9 +64,9 @@ var game = {
         return false;
       },
       resetPosition : function() {
-        this.directionX=1;
+        this.directionX=-this.directionX;
         this.directionY=-this.directionY;
-        this.posX=200;
+        this.posX=350;
         this.posY=200;
       }
     },
@@ -97,6 +97,41 @@ var game = {
     displayPlayers : function() {
       game.display.drawRectangleInLayer(this.playersBallLayer, this.playerOne.width, this.playerOne.height, this.playerOne.color, this.playerOne.posX, this.playerOne.posY);
       game.display.drawRectangleInLayer(this.playersBallLayer, this.playerTwo.width, this.playerTwo.height, this.playerTwo.color, this.playerTwo.posX, this.playerTwo.posY);
+    },
+
+    pause : function (){
+        if(!game.paused) {
+          game.pauseLayer = game.display.createLayer("pause", this.groundWidth, this.groundHeight, undefined, 0, "#000000", 0, 0); 
+          game.display.drawTextInLayer(game.menuLayer, "PAUSE", "26px KarmaticArcade, Courier New, Courier, monospace", "#FFFFFF", 285, 200);
+          game.playersBallLayer.canvas.style.display="none";
+          game.groundLayer.canvas.style.display="none";
+          game.scoreLayer.canvas.style.display="none";
+          game.control.pausePositions.ballDirectionX = game.ball.directionX;
+          game.control.pausePositions.ballDirectionY = game.ball.directionY;
+          game.control.pausePositions.playerOneX = game.playerOne.posX;
+          game.control.pausePositions.playerOneY = game.playerOne.posY;
+          game.control.pausePositions.playerTwoX = game.playerTwo.posX;
+          game.control.pausePositions.playerTwoY = game.playerTwo.posY;
+          game.ball.directionX=0;
+          game.ball.directionY=0;
+        }
+        game.paused=true;
+    },
+
+    unpause:function() {
+      if(game.paused) {
+        game.paused=false;
+        game.clearLayer(game.pauseLayer);
+        game.paused = false;
+        game.ball.directionX = game.control.pausePositions.ballDirectionX;
+        game.ball.directionY = game.control.pausePositions.ballDirectionY;
+        game.playerOne.posX = game.control.pausePositions.playerOneX;
+        game.playerOne.posY = game.control.pausePositions.playerOneY;
+        game.playerTwo.posX = game.control.pausePositions.playerTwoX;
+        game.playerTwo.posY = game.control.pausePositions.playerTwoY;
+        game.groundLayer.canvas.style.display = "inline";
+        game.playersBallLayer.canvas.style.display="inline";
+      }
     },
 
     movePlayers : function() {
@@ -166,7 +201,6 @@ var game = {
 
       game.display.drawTextInLayer(this.groundLayer, "SCORE", "10px KarmaticArcade, Courier New, Courier, monospace", "#FF0000", 10, 10);
       this.playersBallLayer = game.display.createLayer("joueursetballe", this.groundWidth, this.groundHeight, undefined, 2, undefined, 0, 0);  
-      game.display.drawTextInLayer(this.playersBallLayer, "JOUEURSETBALLE", "10px Arial", "#FF0000", 100, 100);
       this.displayScore();
       this.displayBall(200,200);
       this.displayPlayers();

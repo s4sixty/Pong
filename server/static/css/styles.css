@@ -20,6 +20,7 @@
 
 body {
   font-family: "KarmaticArcade", cursive !important;
+  overflow: hidden;
 }
 
 * {
@@ -324,4 +325,9 @@ form button {
     margin-right: 0;
     opacity: 1;
   }
+}
+canvas {
+  position: absolute;
+  top:20% !important;
+  left: 10% !important;
 }

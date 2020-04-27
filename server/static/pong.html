@@ -3,6 +3,13 @@
     <link href="css/styles.css" rel="stylesheet">
   </head>
  <body>
+   <!-- Image and text -->
+<nav class="navbar navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">
+    <img src="img/logo.png" width="50" height="30" class="d-inline-block align-top" alt="">
+    Pong by Samir AMARA
+  </a>
+</nav>
   <div class="wrapper">
     <div class="container">
         <div class="right">
@@ -65,6 +72,21 @@
     game.socket.on('number users', function(msg){
       document.getElementById('nbUsers').innerHTML=msg;
     });
+    game.socket.on('status', function(msg){
+      document.getElementById('chat').innerHTML+='<div class="bubble me">'+msg+'</div>';
+      if(msg=="started") {
+        game.pvp.pvp();
+        console.log(msg);
+        game.pvp.gamestarted=true;
+        $('#waiting').modal('hide');
+        game.pvp.waiting=false;
+      }
+      if(msg=="waiting") {
+        game.ball.directionX=-game.ball.directionX;
+        console.log(msg);
+        $('#waiting').modal('show');
+      }
+    });
   });
 </script>
 <script>
@@ -81,24 +103,30 @@
   var main = function() {
     // le code du jeu
     if(game.winner) {game.end();}
+    if(game.pvp.waiting) {
+        $('#waiting').modal('show');
+      }
     else if(game.playersBallLayer&&game.scoreLayer) {
       game.clearLayer(game.playersBallLayer);
       game.clearLayer(game.scoreLayer);
       game.movePlayers();
       game.displayPlayers();
       game.moveBall();
+      game.collideBallWithPlayersAndAction();
+      game.displayScore();
       if(game.mode=="pvc") game.ai.move();
       if(game.mode=="pvp") {
         if(game.pvp.gamestarted) {
           game.pvp.sendLocalData();
           game.pvp.receiveRemoteData();
-          game.paused=true;
+          game.unpause();
         } else {
+          game.pause();
           $('#waiting').modal('show');
         }
       }
-      game.collideBallWithPlayersAndAction();
-      game.displayScore();
+      
+      console.log(game.pvp.waiting);
     }
     requestAnimId = window.requestAnimationFrame(main); // rappel de main au prochain rafraichissement de la page
   }
