@@ -19,7 +19,7 @@ game.menu = {
     },
 
     startMenu : function() {
-        console.log(game.menu.currentMenu);
+        //console.log(game.menu.currentMenu);
         var logo = new Image;
         logo.src = "./img/logo.png";
         game.menuLayer = game.display.createLayer("menu", game.groundWidth, game.groundHeight, undefined, 0, "#000000", 0, 0); 
@@ -44,8 +44,9 @@ game.menu = {
                 game.menu.startMenu();
             };
             if(e.keyCode == game.keycode.KEYENTER&&this.selectedMenu!=null&&game.menu.currentMenu=="startMenu") {
-                game.MenuMusic.pause();
+                //game.MenuMusic.pause();
                 if(this.selectedMenu=="pvc") {
+                    game.MenuMusic.pause();
                     game.mode="pvc";
                     game.pvc();
                 }
@@ -66,7 +67,7 @@ game.menu = {
     },
 
     multiplayer : function() {
-        console.log("multiplayer");
+        //console.log("multiplayer");
         var logo = new Image;
         logo.src = "./img/logo.png";
         game.menuLayer = game.display.createLayer("menu", game.groundWidth, game.groundHeight, undefined, 0, "#000000", 0, 0); 
@@ -79,7 +80,8 @@ game.menu = {
         game.display.drawTextInLayer(game.menuLayer, "Appuyez sur Entrer pour choisir", "11px Courier New, Courier, monospace", "#FFFFFF", 250, game.groundHeight-40);
         game.display.drawTextInLayer(game.menuLayer, "Samir AMARA "+String.fromCharCode(169)+" 2020 ", "14px Courier New, Courier, monospace", "#FFFFFF", 275, game.groundHeight-10);
         window.addEventListener("keydown", e => {
-            console.log(this.multiplayerMenu);
+            
+            //console.log(this.multiplayerMenu);
             if(e.keyCode == game.keycode.KEYDOWN&&this.multiplayerMenu=="1v1"&&this.multiplayerMenu!=null) {
                 this.multiplayerMenu = "2v2";
                 game.clearLayer(game.menuLayer);
@@ -92,6 +94,7 @@ game.menu = {
                 game.menu.multiplayer();
             };
             if(e.keyCode == game.keycode.KEYENTER&&this.multiplayerMenu!=null) {
+                game.MenuMusic.pause();
                 console.log(game.mode);
                 game.MenuMusic.pause();
                 if(this.multiplayerMenu=="1v1") {

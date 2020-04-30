@@ -37,7 +37,7 @@ var game = {
           game.end();
           return;
         }
-        if (game.playerTwo.score==10) {
+        if (game.playerFour.score==10) {
           game.winner="p2";
           game.end();
           return;
@@ -47,7 +47,7 @@ var game = {
           this.resetPosition();
         }
         if( this.posX <= 0 ) {
-          game.playerTwo.score++;
+          game.playerFour.score++;
           this.resetPosition();
         }
         if ( this.posY > game.groundHeight-this.height || this.posY < 0  ) {
@@ -86,27 +86,15 @@ var game = {
       width : 10,
       height : 50,
       color : "#FFFFFF",
-      posX : 680,
-      posY : 200,
-      goUp : false,
-      goDown : false,
-      originalPosition : "right",
-      score : 0
-    },
-
-    playerThree : {
-      width : 10,
-      height : 50,
-      color : "#FFFFFF",
       posX : 200,
       posY : 200,
       goUp : false,
       goDown : false,
-      originalPosition : "right",
+      originalPosition : "left",
       score : 0
     },
 
-    playerFour : {
+    playerThree : {
       width : 10,
       height : 50,
       color : "#FFFFFF",
@@ -118,16 +106,32 @@ var game = {
       score : 0
     },
 
+    playerFour : {
+      width : 10,
+      height : 50,
+      color : "#FFFFFF",
+      posX : 680,
+      posY : 200,
+      goUp : false,
+      goDown : false,
+      originalPosition : "right",
+      score : 0
+    },
+
     displayPlayers : function() {
       game.display.drawRectangleInLayer(this.playersBallLayer, this.playerOne.width, this.playerOne.height, this.playerOne.color, this.playerOne.posX, this.playerOne.posY);
-      game.display.drawRectangleInLayer(this.playersBallLayer, this.playerTwo.width, this.playerTwo.height, this.playerTwo.color, this.playerTwo.posX, this.playerTwo.posY);
+      game.display.drawRectangleInLayer(this.playersBallLayer, this.playerFour.width, this.playerFour.height, this.playerFour.color, this.playerFour.posX, this.playerFour.posY);
     },
 
     displayFourPlayers : function() {
-      game.display.drawRectangleInLayer(this.playersBallLayer, this.playerOne.width, this.playerOne.height, this.playerOne.color, this.playerOne.posX, this.playerOne.posY);
-      game.display.drawRectangleInLayer(this.playersBallLayer, this.playerTwo.width, this.playerTwo.height, this.playerTwo.color, this.playerTwo.posX, this.playerTwo.posY);
-      game.display.drawRectangleInLayer(this.playersBallLayer, this.playerThree.width, this.playerThree.height, this.playerThree.color, this.playerThree.posX, this.playerThree.posY);
-      game.display.drawRectangleInLayer(this.playersBallLayer, this.playerFour.width, this.playerFour.height, this.playerFour.color, this.playerFour.posX, this.playerFour.posY);
+      //console.log(game.control.role);
+      if(game.control.role!=1)game.display.drawRectangleInLayer(this.playersBallLayer, this.playerOne.width, this.playerOne.height, this.playerOne.color, this.playerOne.posX, this.playerOne.posY);
+      if(game.control.role!=2) {
+        game.display.drawRectangleInLayer(this.playersBallLayer, this.playerTwo.width, this.playerTwo.height, this.playerTwo.color, this.playerTwo.posX, this.playerTwo.posY);
+      }
+      if(game.control.role!=3)game.display.drawRectangleInLayer(this.playersBallLayer, this.playerThree.width, this.playerThree.height, this.playerThree.color, this.playerThree.posX, this.playerThree.posY);
+      if(game.control.role!=4)game.display.drawRectangleInLayer(this.playersBallLayer, this.playerFour.width, this.playerFour.height, this.playerFour.color, this.playerFour.posX, this.playerFour.posY);
+      game.display.drawRectangleInLayer(this.playersBallLayer, game.control.player.width, game.control.player.height, game.control.player.color, game.control.player.posX, game.control.player.posY);
     },
 
     pause : function (){
@@ -182,6 +186,24 @@ var game = {
       }
     },
 
+    movePlayers2v2 : function() {
+      //console.log(game.control.player); 
+      if ( game.control.controlSystem == "KEYBOARD" ) {
+        // keyboard control
+        if ( game.control.player.goUp ) {
+          (game.control.player.posY>0)?game.control.player.posY-=5:game.control.player.posY=0;
+        } else if ( game.control.player.goDown ) {
+          (game.control.player.posY<this.groundHeight-game.control.player.height)?game.control.player.posY+=5:game.control.player.posY=this.groundHeight-game.control.player.height;
+        }
+      } else if ( game.control.controlSystem == "MOUSE" ) {
+        // mouse control
+        if (game.control.player.goUp && game.control.player.posY > game.control.mousePointer)
+        (game.control.player.posY>0)?game.control.player.posY-=5:game.control.player.posY=0;
+        else if (game.control.player.goDown && game.control.player.posY < game.control.mousePointer)
+        (game.control.player.posY<this.groundHeight-game.control.player.height)?game.control.player.posY+=5:game.control.player.posY=this.groundHeight-game.control.player.height;
+      }
+    },
+
     displayBall : function() {
       game.display.drawRectangleInLayer(this.playersBallLayer, this.ball.width, this.ball.height, this.ball.color, this.ball.posX, this.ball.posY);
     },
@@ -197,15 +219,15 @@ var game = {
         game.ball.directionX = -game.ball.directionX;
         this.playerSound.play();
       }
-      if ( this.ball.collide(game.playerTwo) ) {
+      if ( this.ball.collide(game.playerFour) ) {
         game.ball.directionX = -game.ball.directionX;
         this.playerSound.play();
       }
-      if ( this.ball.collide(game.playerThree) && game.mode=="2v2" ) {
+      if ( this.ball.collide(game.playerTwo) && game.mode=="2v2" ) {
         game.ball.directionX = -game.ball.directionX;
         this.playerSound.play();
       }
-      if ( this.ball.collide(game.playerFour) && game.mode=="2v2") {
+      if ( this.ball.collide(game.playerThree) && game.mode=="2v2") {
         game.ball.directionX = -game.ball.directionX;
         this.playerSound.play();
       }
@@ -213,7 +235,7 @@ var game = {
 
     displayScore : function() {
       game.display.drawTextInLayer(this.scoreLayer, this.playerOne.score, "60px KarmaticArcade, Courier New, Courier, monospace", "#FFFFFF", this.scorePosPlayer1, 55);
-      game.display.drawTextInLayer(this.scoreLayer, this.playerTwo.score, "60px KarmaticArcade, Courier New, Courier, monospace", "#FFFFFF", this.scorePosPlayer2, 55);
+      game.display.drawTextInLayer(this.scoreLayer, this.playerFour.score, "60px KarmaticArcade, Courier New, Courier, monospace", "#FFFFFF", this.scorePosPlayer2, 55);
     },
 
     clearLayer : function(targetLayer) {
@@ -252,7 +274,7 @@ var game = {
       this.backgroundMusic = new Audio("./music/background.ogg");
       this.backgroundMusic.play();
 
-      game.ai.setPlayerAndBall(this.playerTwo, this.ball);
+      game.ai.setPlayerAndBall(this.playerFour, this.ball);
     },
 
     end : function() {

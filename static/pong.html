@@ -87,6 +87,13 @@
         $('#waiting').modal('show');
       }
     });
+    game.socket.on('role', function(msg){
+      game.control.role=msg;
+      if(msg==1) game.control.player=game.playerOne;
+      if(msg==2) game.control.player=game.playerTwo;
+      if(msg==3) game.control.player=game.playerThree;
+      if(msg==4) game.control.player=game.playerFour;
+    });
   });
 </script>
 <script>
@@ -109,7 +116,8 @@
     else if(game.playersBallLayer&&game.scoreLayer) {
       game.clearLayer(game.playersBallLayer);
       game.clearLayer(game.scoreLayer);
-      game.movePlayers();
+      if(game.mode!="2v2")game.movePlayers();
+      if(game.mode=="2v2")game.movePlayers2v2();
       if(game.mode!="2v2")game.displayPlayers();
       if(game.mode=="2v2")game.displayFourPlayers();
       game.moveBall();
@@ -126,8 +134,14 @@
           $('#waiting').modal('show');
         }
       }
-      
-      console.log(game.mode);
+      if(game.mode=="2v2") {
+        if(game.pvp.gamestarted) {
+          game.pvp.sendLocalData2v2();
+          game.pvp.receiveRemoteData2v2();
+          //console.log(game.control.player.posX);
+      }
+    }
+      //console.log(game.mode);
     }
     requestAnimId = window.requestAnimationFrame(main); // rappel de main au prochain rafraichissement de la page
   }

@@ -59,6 +59,11 @@ io.sockets.on('connection', function (socket) {
   // Positions dans le jeu
   socket.on('remotePlayerData', (msg) => {
     socket.to(toString(socket.room)).emit('remotePlayerData', msg);
+    console.log(msg);
+  });
+  // Positions dans le jeu
+  socket.on('remotePlayerData2v2', (msg) => {
+    socket.to(toString(socket.room)).emit('remotePlayerData2v2', {data : msg,role : socket.role});
     //console.log(msg);
   });
   // Gére la synchronisation des joueurs
@@ -100,10 +105,13 @@ io.sockets.on('connection', function (socket) {
       console.log(roomno);
       if(!io.sockets.adapter.rooms[toString(roomno)] || io.sockets.adapter.rooms[toString(roomno)].length<=3) {
         io.in(toString(roomno)).emit('status', 'waiting');
-        io.in(toString(roomno)).emit('player', toString(player));
+        socket.emit('role', player);
+        socket.role=player;
+        console.log(socket.role);
         socket.join(toString(roomno));
         socket.room=roomno;
         socket.to(toString(socket.room)).emit('chat message', "a user just joined your 2v2 room");
+        player++;
         if(io.sockets.adapter.rooms[toString(roomno)].length==4){
           //Démarrer l'ancienne queue
           io.in(toString(roomno)).emit('status', 'started');
